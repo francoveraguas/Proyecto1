@@ -36,7 +36,7 @@ export class ProductosService {
   }
 
   findOne(id: number) {
-    const product = this.productosRepository.findOneBy({ id });
+    const product = this.productosRepository.findOne({ id });
     if (!product) {
       throw new NotFoundException(`Producto ID: ${id} => No existe`);
     }
@@ -76,7 +76,7 @@ export class ProductosService {
   // }
 
   async update(id: number, changes: UpdateProductDTO) {
-    const product = await this.productosRepository.findOneBy({ id });
+    const product = await this.productosRepository.findOne({ id });
     this.productosRepository.merge(product, changes);
     return this.productosRepository.save(product);
   }
