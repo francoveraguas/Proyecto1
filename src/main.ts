@@ -15,8 +15,8 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Veraguas API')
-    .setDescription('Documentación para la API de Hedy')
-    .setVersion('1.0.0')
+    .setDescription('Documentación para la API de Hedy Backend')
+    .setVersion('2.0.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -63,6 +63,9 @@ export class OperadoresService {
   // }
 
   async findAll(): Promise<Operador[]> {
+    const apiKey = this.configService.get('APIKEY');
+    const dbName = this.configService.get('DB_NAME');
+    console.log(apiKey, dbName);
     return this.operadoresRepository.find();
   }
   // findAll() {
