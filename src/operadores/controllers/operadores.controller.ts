@@ -47,10 +47,10 @@ export class OperadoresController {
     return this.operadoresService.remove(id);
   }
 
-  @Get()
-  getOperadores() {
-    return this.operadoresService.findAll();
-  }
+  // @Get()
+  // getOperadores() {
+  //   return this.operadoresService.findAll();
+  // }
 
   @Get(':id/pedidos')
   getOrders(@Param('id', ParseIntPipe) id: number) {

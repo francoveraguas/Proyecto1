@@ -76,13 +76,24 @@ export class OperadoresService {
   // }
 
   async getOrderByUser(id: number) {
-    const operador = this.findOne(id);
+    const operador = this.operadoresRepository.findOne(id);
     return {
+      id: (await operador).id,
       date: new Date(),
-      operador,
+      operador: await operador,
       products: await this.productsService.findAll(),
     };
   }
+
+  // funcionando - async getOrderByUser(id: number) {
+  //   const operador = this.findOne(id);
+  //   return {
+  //     date: new Date(),
+  //     operador,
+  //     products: await this.productsService.findAll(),
+  //   };
+  // }
+
   // getOrderByUser(id: number): Pedido {
   //   const operador = this.findOne(id);
   //   return {
