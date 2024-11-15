@@ -20,7 +20,7 @@ export class OperadoresController {
   constructor(private operadoresService: OperadoresService) {}
 
   @Get()
-  findAll(): Promise<Operador[]> {
+  findAll() {
     return this.operadoresService.findAll();
   }
 
@@ -30,7 +30,7 @@ export class OperadoresController {
   }
 
   @Post()
-  create(@Body() nuevoOperador: CreateOperadorDTO): Promise<Operador> {
+  create(@Body() nuevoOperador: CreateOperadorDTO) {
     return this.operadoresService.create(nuevoOperador);
   }
 
@@ -38,12 +38,12 @@ export class OperadoresController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() operador: UpdateOperadorDTO,
-  ): Promise<Operador> {
+  ) {
     return this.operadoresService.update(id, operador);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.operadoresService.remove(id);
   }
 
@@ -57,8 +57,8 @@ export class OperadoresController {
     return this.operadoresService.getOrderByUser(id);
   }
 
-  @Get('tareas')
-  getTareas() {
-    return this.operadoresService.getTareas();
-  }
+  // @Get('tareas')
+  // getTareas() {
+  //   return this.operadoresService.getTareas();
+  // }
 }

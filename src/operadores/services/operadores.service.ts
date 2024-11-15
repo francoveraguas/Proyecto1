@@ -7,6 +7,7 @@ import { Client } from 'pg';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateOperadorDTO, UpdateOperadorDTO } from '../dtos/operador.dto';
+import { CompradoresService } from './compradores.service';
 
 @Injectable()
 export class OperadoresService {
@@ -16,101 +17,74 @@ export class OperadoresService {
     @InjectRepository(Operador)
     private operadoresRepository: Repository<Operador>,
     @Inject('PG') private clientPG: Client,
+    private compradorService: CompradoresService,
   ) {}
 
-  // private idCounter = 1;
-  // private operadores: Operador[] = [
-  //   {
-  //     id: 1,
-  //     email: 'prueba@hotmail.com',
-  //     password: 'contraseña',
-  //     role: 'Desarrollador',
-  //   },
-  // ];
-  create(nuevoOperador: CreateOperadorDTO): Promise<Operador> {
-    const operador = this.operadoresRepository.create(nuevoOperador);
-    return this.operadoresRepository.save(operador);
+  async create(data: CreateOperadorDTO) {
+    const nuevoOperador = this.operadoresRepository.create(data);
+    if (data.compradorId) {
+      const comprador = await this.compradorService.findOne(data.compradorId);
+      nuevoOperador.comprador = comprador;
+    }
+    return await this.operadoresRepository.save(nuevoOperador);
   }
 
-  async update(
-    id: number,
-    updatedOperador: UpdateOperadorDTO,
-  ): Promise<Operador> {
+  async update(id: number, changes: UpdateOperadorDTO) {
     const operador = await this.findOne(id);
     if (!operador) {
+      throw new NotFoundException(`Operador ID ${id} => no existe`);
     }
-    const mergedOperador = this.operadoresRepository.merge(
+    if (changes.compradorId) {
+      const nuevoComprador = await this.compradorService.findOne(
+        changes.compradorId,
+      );
+      operador.comprador = nuevoComprador;
+    }
+    const actualizarOperador = this.operadoresRepository.merge(
       operador,
-      updatedOperador,
+      changes,
     );
-    return this.operadoresRepository.save(mergedOperador);
+    return this.operadoresRepository.save(actualizarOperador);
   }
-  remove(id: number): Promise<DeleteResult> {
+
+  async remove(id: number) {
+    const operador = await this.operadoresRepository.findOne(id);
+    if (!operador) {
+      throw new NotFoundException(`Operador ID ${id} => no existe`);
+    }
+    console.log(`Operador Eliminado`);
     return this.operadoresRepository.delete(id);
   }
 
-  async findOne(id: number): Promise<Operador> {
-    return this.operadoresRepository.findOne({
-      where: { id },
+  async findOne(id: number) {
+    const operador = await this.operadoresRepository.findOne(id, {
+      relations: ['comprador'],
     });
+    if (!operador) {
+      throw new NotFoundException(`Operador ID ${id} => no existe`);
+    }
+    return operador;
   }
-  // findOne(id: number) {
-  //   const operador = this.operadores.find((item) => item.id === id);
-  //   if (!operador) {
-  //     throw new NotFoundException(`El operador con id: #${id} no existe`);
-  //   }
-  //   return operador;
-  // }
 
-  async findAll(): Promise<Operador[]> {
+  async findAll() {
     const apiKey = this.configService.get('APIKEY');
     const dbName = this.configService.get('DB_NAME');
     console.log(apiKey, dbName);
-    return this.operadoresRepository.find();
+    return await this.operadoresRepository.find({
+      relations: ['comprador'],
+    });
   }
-  // findAll() {
-  //   const apiKey = this.configService.get('APIKEY');
-  //   const dbName = this.configService.get('DB_NAME');
-  //   console.log(apiKey, dbName);
-  //   return this.operadores;
-  // }
 
   async getOrderByUser(id: number) {
-    const operador = this.operadoresRepository.findOne(id);
+    const operador = await this.operadoresRepository.findOne(id);
+    if (!operador) {
+      throw new NotFoundException(`Operador ID ${id} => no existe`);
+    }
     return {
       id: (await operador).id,
       date: new Date(),
       operador: await operador,
       products: await this.productsService.findAll(),
     };
-  }
-
-  // funcionando - async getOrderByUser(id: number) {
-  //   const operador = this.findOne(id);
-  //   return {
-  //     date: new Date(),
-  //     operador,
-  //     products: await this.productsService.findAll(),
-  //   };
-  // }
-
-  // getOrderByUser(id: number): Pedido {
-  //   const operador = this.findOne(id);
-  //   return {
-  //     date: new Date(),
-  //     operador,
-  //     productos: this.productsService.findAll(),
-  //   };
-  // }
-
-  getTareas() {
-    return new Promise((resolve, reject) => {
-      this.clientPG.query('SELECT * FROM tareas', (err, res) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(res.rows);
-      });
-    });
   }
 }

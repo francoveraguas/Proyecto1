@@ -45,10 +45,6 @@ export class ProductosController {
   create(@Body() producto: CreateProductDTO): Promise<Producto> {
     return this.productosService.create(producto);
   }
-  // @Post()
-  // create(@Body() payload: CreateProductDTO) {
-  //   return this.productosService.create(payload);
-  // }
 
   @ApiOperation({ summary: 'Actualizar un producto.' })
   @Put(':idProduct')
@@ -64,47 +60,4 @@ export class ProductosController {
   remove(@Param('idProduct', ParseIntPipe) idProduct: number) {
     return this.productosService.remove(idProduct);
   }
-
-  // @Get(':idProducto')
-  // getProducto(@Param('idProducto') idProducto: string): string {
-  //   return `El identificador del producto es: ${idProducto}`;
-  // }
-
-  // @Get(':nombre/productos/:calibreProducto')
-  // getCategory(
-  //   @Param('nombre') nombre: string,
-  //   @Param('calibreProducto') calibreProducto: string,
-  // ) {
-  //   return `El rifle ${nombre} es Calibre: ${calibreProducto}mm.`;
-  // }
-
-  // @Post()
-  // create(@Body() payload: any) {
-  //   return {
-  //     message: 'Creado nuevo producto',
-  //     payload,
-  //   };
-  // }
-
-  // @Put(':idProducto')
-  // actualizarProducto(
-  //   @Param('idProducto') idProducto: string,
-  //   @Body() body: any,
-  // ): any {
-  //   return {
-  //     idProducto: idProducto,
-  //     nombre: body.nombre,
-  //     precio: body.precio,
-  //     calibre: body.calibre,
-  //   };
-  // }
-
-  // @Delete(':idProduct')
-  // deleteProducto(@Param('idProduct') idProduct: string): any {
-  //   return {
-  //     idProduct: idProduct,
-  //     delete: true,
-  //     count: 1,
-  //   };
-  // }
 }
