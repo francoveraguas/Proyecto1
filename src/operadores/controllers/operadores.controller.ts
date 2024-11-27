@@ -25,7 +25,7 @@ export class OperadoresController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Operador> {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.operadoresService.findOne(id);
   }
 

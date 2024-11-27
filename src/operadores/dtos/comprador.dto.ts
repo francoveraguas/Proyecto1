@@ -8,9 +8,9 @@ import {
 } from 'class-validator';
 
 export class CreateCompradorDTO {
-  @ApiProperty({ description: 'ID del Comprador' })
-  @IsNumber()
-  readonly id: number;
+  // @ApiProperty({ description: 'ID del Comprador' })
+  // @IsNumber()
+  // readonly id: number;
 
   @ApiProperty({ description: 'Nombre del Comprador' })
   @IsString()
@@ -27,15 +27,15 @@ export class CreateCompradorDTO {
   @IsNotEmpty()
   readonly telefono: string;
 
-  @ApiProperty({ description: 'Fecha de Creación del Registro' })
-  @IsDate()
-  readonly createAt: Date;
+  // @ApiProperty({ description: 'Fecha de Creación del Registro' })
+  // @IsDate()
+  // readonly createAt: Date;
 
-  @ApiProperty({ description: 'Fecha de Actualización del Registro' })
-  @IsDate()
-  readonly updateAt: Date;
+  // @ApiProperty({ description: 'Fecha de Actualización del Registro' })
+  // @IsDate()
+  // readonly updateAt: Date;
 }
 
 export class UpdateCompradorDTO extends PartialType(
-  OmitType(CreateCompradorDTO, ['id']),
+  OmitType(CreateCompradorDTO, ['nombre', 'apellido']),
 ) {}

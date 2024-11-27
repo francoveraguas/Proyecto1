@@ -1,21 +1,21 @@
+import { Producto } from 'src/productos/entities/producto.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Producto } from './producto.entity';
+import { Pedido } from './pedido.entity';
 
 @Entity()
-export class Categoria {
+export class DetallePedido {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
-  nombre: string;
+  @Column({ type: 'int' })
+  cantidad: number;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -29,7 +29,9 @@ export class Categoria {
   })
   updateAt: Date;
 
-  @ManyToMany(() => Producto, (producto) => producto.categorias)
-  @JoinTable()
-  productos: Producto[];
+  @ManyToOne(() => Producto)
+  producto: Producto;
+
+  @ManyToOne(() => Pedido, (pedido) => pedido.detalles)
+  pedido: Pedido;
 }

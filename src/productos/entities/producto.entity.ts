@@ -2,9 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Fabricante } from './fabricante.entity';
+import { Categoria } from './categoria.entity';
 
 @Entity()
 export class Producto {
@@ -40,4 +45,13 @@ export class Producto {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
+
+  @ManyToOne(() => Fabricante, (fabricante) => fabricante.productos)
+  fabricante: Fabricante;
+
+  @Column({ name: 'fabricanteId', nullable: true })
+  fabricanteId: number;
+
+  @ManyToMany(() => Categoria, (categoria) => categoria.productos)
+  categorias: Categoria[];
 }
