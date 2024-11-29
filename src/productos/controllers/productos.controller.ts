@@ -15,6 +15,7 @@ import { ParseIntPipe } from 'src/common/parse-int.pipe';
 import {
   CreateProductDTO,
   UpdateProductDTO,
+  FiltroProductosDTO,
 } from 'src/productos/dtos/producto.dto';
 import { ProductosService } from 'src/productos/services/productos.service';
 import { Producto } from '../entities/producto.entity';
@@ -26,12 +27,8 @@ export class ProductosController {
 
   @ApiOperation({ summary: 'Obtener lista de productos.' })
   @Get()
-  findAll(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 0,
-    @Query('brand') brand = '',
-  ) {
-    return this.productosService.findAll();
+  findAll(@Query() params: FiltroProductosDTO) {
+    return this.productosService.findAll(params);
   }
 
   @ApiOperation({ summary: 'Obtener producto especifico.' })

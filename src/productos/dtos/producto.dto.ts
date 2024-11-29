@@ -7,6 +7,8 @@ import {
   IsPositive,
   IsString,
   IsUrl,
+  Min,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateProductDTO {
@@ -54,3 +56,25 @@ export class CreateProductDTO {
 export class UpdateProductDTO extends PartialType(
   OmitType(CreateProductDTO, ['nombre']),
 ) {}
+
+export class FiltroProductosDTO {
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsOptional()
+  @Min(0)
+  offset: number;
+
+  @IsOptional()
+  @IsString()
+  orden: string;
+
+  @IsOptional()
+  @IsPositive()
+  precioMinimo: number;
+
+  @ValidateIf((item) => item.precioMinimo)
+  @IsPositive()
+  precioMaximo: number;
+}

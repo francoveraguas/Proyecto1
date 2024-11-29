@@ -30,6 +30,14 @@ export class Categoria {
   updateAt: Date;
 
   @ManyToMany(() => Producto, (producto) => producto.categorias)
-  @JoinTable()
+  @JoinTable({
+    name: 'productos_categorias',
+    joinColumn: {
+      name: 'categoria_id',
+    },
+    inverseJoinColumn: {
+      name: 'producto_id',
+    },
+  })
   productos: Producto[];
 }

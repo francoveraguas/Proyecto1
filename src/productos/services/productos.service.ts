@@ -2,10 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   CreateProductDTO,
+  FiltroProductosDTO,
   UpdateProductDTO,
 } from 'src/productos/dtos/producto.dto';
 import { Producto } from 'src/productos/entities/producto.entity';
-import { Repository } from 'typeorm';
+import { Between, FindConditions, Repository } from 'typeorm';
 import { FabricantesService } from './fabricantes.service';
 import { CategoriasService } from './categorias.service';
 
@@ -18,11 +19,38 @@ export class ProductosService {
     private categoriasService: CategoriasService,
   ) {}
 
-  findAll() {
+  findAll(params?: FiltroProductosDTO) {
+    if (params) {
+      const where: FindConditions<Producto> = {};
+      const { limit, offset, orden } = params;
+      const { precioMinimo, precioMaximo } = params;
+      let list;
+      if (precioMinimo && precioMaximo) {
+        where.precio = Between(precioMinimo, precioMaximo);
+      }
+      if (orden === 'DESC') {
+        list = { id: 'DESC' };
+      } else {
+        list = { id: 'ASC' };
+      }
+      return this.productosRepository.find({
+        relations: ['fabricante'],
+        where,
+        take: limit,
+        skip: offset,
+        order: list,
+      });
+    }
     return this.productosRepository.find({
       relations: ['fabricante'],
     });
   }
+
+  // findAll() {
+  //   return this.productosRepository.find({
+  //     relations: ['fabricante'],
+  //   });
+  // }
 
   findOne(id: number) {
     const producto = this.productosRepository.findOne(id, {
